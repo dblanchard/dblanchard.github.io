@@ -3,69 +3,503 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>D Blanchard — Security & AI Leadership</title>
+  <title>Duane Blanchard — Security & AI Leadership</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0b0c0f;
+      --surface: #13151a;
+      --border: #1e2028;
+      --accent: #e8b44c;
+      --accent-dim: rgba(232, 180, 76, 0.12);
+      --text: #e8e9ec;
+      --muted: #6b6f7a;
+      --faint: #2a2d38;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #fafafa;
-      color: #222;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      padding: 0 1.5rem;
-    }
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-    p {
-      max-width: 640px;
-      font-size: 1.25rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
       line-height: 1.6;
-      margin-bottom: 2rem;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-    a.button {
-      display: inline-block;
-      padding: 0.85rem 1.4rem;
-      border-radius: 8px;
-      background: #000;
-      color: #fff;
+
+    /* ── grid noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, var(--faint) 39px, var(--faint) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, var(--faint) 39px, var(--faint) 40px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── ambient glow ── */
+    .glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-a {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(232,180,76,0.07) 0%, transparent 70%);
+      top: -200px; right: -150px;
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+    .glow-b {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(80,120,200,0.06) 0%, transparent 70%);
+      bottom: 0; left: -100px;
+      animation: drift 22s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes drift {
+      0%   { transform: translate(0, 0); }
+      100% { transform: translate(40px, 30px); }
+    }
+
+    /* ── layout ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── nav bar ── */
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.6rem 2rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.85rem;
+      color: var(--muted);
       text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── hero ── */
+    .hero {
+      padding: 5rem 0 3rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.8rem;
+      color: var(--text);
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-body {
+      max-width: 600px;
       font-size: 1.1rem;
-      font-weight: 600;
-      transition: opacity 0.2s ease;
+      line-height: 1.75;
+      color: #9ea3b0;
+      margin-bottom: 2.8rem;
     }
-    a.button:hover {
-      opacity: 0.8;
+
+    .cta-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
     }
-    footer {
-      position: absolute;
-      bottom: 1rem;
-      width: 100%;
-      text-align: center;
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.6rem;
+      background: var(--accent);
+      color: #0b0c0f;
+      border-radius: 4px;
       font-size: 0.9rem;
-      color: #777;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.4rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--muted); color: var(--text); transform: translateY(-1px); }
+
+    /* ── cert strip ── */
+    .cert-strip {
+      margin: 4rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.25s forwards;
+    }
+    .cert-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .cert-tag:hover { border-color: var(--accent); color: var(--accent); }
+    .cert-tag.gold { border-color: rgba(232,180,76,0.35); color: var(--accent); }
+
+    /* ── divider ── */
+    .rule {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 4rem;
+    }
+
+    /* ── pillars grid ── */
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.4s forwards;
+    }
+
+    .pillar {
+      background: var(--surface);
+      padding: 2rem 1.8rem;
+      transition: background 0.2s;
+    }
+    .pillar:hover { background: #181b23; }
+
+    .pillar-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    .pillar h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .pillar p {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    /* ── selected highlights ── */
+    .highlights {
+      margin-bottom: 5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.55s forwards;
+    }
+
+    .highlight-item {
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      gap: 0 1.5rem;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .highlight-item:first-child { border-top: 1px solid var(--border); }
+
+    .hi-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--faint);
+      padding-top: 0.25rem;
+    }
+
+    .hi-body strong {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+
+    .hi-body span {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── contact ── */
+    .contact-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2.5rem;
+      margin-bottom: 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.7s forwards;
+    }
+
+    .contact-block h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      margin-bottom: 0.4rem;
+    }
+
+    .contact-block p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* ── footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 1.6rem 2rem;
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2.4rem; }
+      .contact-block { flex-direction: column; align-items: flex-start; }
+      nav { padding: 1.2rem 1.5rem; }
+      main { padding: 0 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Security, AI Governance, and Technical Leadership</h1>
-    <p>
-      I build scalable security programs, translate risk for executives, and partner with engineering teams to move fast—without breaking things. If you're hiring for security leadership, AI governance, or a hybrid technical role, let's talk.
-    </p>
-    <a class="button" href="mailto:duane@ravencybergroup.com?subject=Let%27s%20connect%20about%20security%20needs.&X-Priority=1&(High)">Contact Me</a>
-  </div>
+
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <nav>
+    <span class="nav-logo">D. Blanchard</span>
+    <ul class="nav-links">
+      <li><a href="https://github.com/dblanchard" target="_blank">GitHub</a></li>
+      <li><a href="https://linkedin.com/in/red-leader" target="_blank">LinkedIn</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <section class="hero">
+      <div class="eyebrow">Security &amp; AI Governance</div>
+      <h1>Adversarial depth.<br><em>Policy clarity.</em></h1>
+      <p class="hero-body">
+        Twenty years spanning red team operations, enterprise security program leadership,
+        and applied ML/NLP research in classified defense environments. I translate adversarial
+        threat models into governance frameworks that hold up against sophisticated actors—
+        and explain them to boards without losing the signal.
+      </p>
+      <div class="cta-row">
+        <a class="btn-primary" href="mailto:duane@ravencybergroup.com?subject=Let%27s%20connect">
+          Get in Touch
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn-ghost" href="https://github.com/dblanchard" target="_blank">
+          View Portfolio
+        </a>
+      </div>
+    </section>
+
+    <div class="cert-strip">
+      <span class="cert-tag gold">CISSP</span>
+      <span class="cert-tag gold">GPEN</span>
+      <span class="cert-tag gold">GCIH</span>
+      <span class="cert-tag gold">GSEC</span>
+      <span class="cert-tag gold">CEH</span>
+      <span class="cert-tag">2× U.S. Patents</span>
+      <span class="cert-tag">MA Computational Linguistics · UW</span>
+      <span class="cert-tag">Secret Clearance · TS/SCI Qualified</span>
+      <span class="cert-tag">SANS SEC560 Instructor</span>
+    </div>
+
+    <hr class="rule">
+
+    <p class="section-label">What I bring</p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-num">01</div>
+        <h3>Offensive &amp; Adversarial</h3>
+        <p>Red team operations, physical pen testing, exploit development, MITRE ATT&amp;CK threat modeling. Hands-on with Proxmark3, Flipper Zero, Sliver C2, and custom fabricated bypass tools.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">02</div>
+        <h3>AI &amp; ML Security</h3>
+        <p>Applied ML/NLP research at Boeing Phantom Works in a classified environment. Dual-use AI risk evaluation at the design level—not just the perimeter. Two U.S. patents in security innovation.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">03</div>
+        <h3>Policy &amp; Governance</h3>
+        <p>Security policy frameworks at scale, vCISO advisory, board-level reporting, CMMC/HIPAA/PCI compliance, and threat model translation for non-technical executives.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">04</div>
+        <h3>Team Leadership</h3>
+        <p>Director-level security team management across defense, technology, and gaming sectors. Built programs from scratch, led through organizational disruption, mentored practitioners at every level.</p>
+      </div>
+    </div>
+
+    <div class="highlights">
+      <p class="section-label">Selected highlights</p>
+
+      <div class="highlight-item">
+        <span class="hi-num">—</span>
+        <div class="hi-body">
+          <strong>Multi-site physical pen testing for Google (via Pinkerton)</strong>
+          <span>Coordinated nine operators across three simultaneous international sites. Tradecraft included covert RFID cloning, IR LED camera defeat, and custom fabricated under-door tools.</span>
+        </div>
+      </div>
+
+      <div class="highlight-item">
+        <span class="hi-num">—</span>
+        <div class="hi-body">
+          <strong>Boeing Phantom Works — Classified AI/ML Research</strong>
+          <span>Senior Research Scientist developing ML models for cybersecurity applications, including NLP-based binary traffic classification. Reported SBInet threat analyses to Boeing VPs and DHS directors.</span>
+        </div>
+      </div>
+
+      <div class="highlight-item">
+        <span class="hi-num">—</span>
+        <div class="hi-body">
+          <strong>Director of Security, Kymeta Corporation</strong>
+          <span>Built unified cyber/physical security program: 40% reduction in incidents, 80% reduction in mean time to detection. Zero incidents through two company-wide reductions.</span>
+        </div>
+      </div>
+
+      <div class="highlight-item">
+        <span class="hi-num">—</span>
+        <div class="hi-body">
+          <strong>Author, speaker, and instructor</strong>
+          <span>PenTest Magazine byline, SOURCE Seattle speaker, SANS SEC560 Mentor instructor, U.S. Cyber Challenge plenary speaker and CTF winner.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-block">
+      <div>
+        <h2>Let's talk.</h2>
+        <p>Open to senior security, AI governance, and dual-use research roles.</p>
+      </div>
+      <a class="btn-primary" href="mailto:duane@ravencybergroup.com?subject=Let%27s%20connect%20about%20a%20role&X-Priority=1">
+        duane@ravencybergroup.com
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+  </main>
+
   <footer>
-    <a href="https://github.com/dblanchard" target="_blank">GitHub Portfolio</a>
+    <span>Duane Blanchard &nbsp;·&nbsp; Bellevue, WA</span>
+    <a href="https://github.com/dblanchard" target="_blank">dblanchard.github.io →</a>
   </footer>
+
 </body>
 </html>
-
